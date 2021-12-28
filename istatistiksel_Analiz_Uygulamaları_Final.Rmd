@@ -1,0 +1,255 @@
+---
+title: "İstatistiksel analiz uygulamaları Final ödevi"
+author: Ramazan Erduran, İlkay Şafak Baytar, Talha Kurt, Mert Hasan Kılıç, Müstecep
+  Berca Akbayır4
+date: "28 12 2021"
+output:
+  html_document: default
+  word_document: default
+---
+
+
+# Tidyr Kütüphanesi(Düzenli Dağınık Veri):
+
+  R'daki  en önemli paketlerden biri tidyr paketidir. tidyr, ortak API'ler ve paylaşılan bir felsefe ile tasarlanmış bir paket ekosistemi olan tidyverse'nin bir parçasıdır. tidyr, reshape2 (2010-2014) ve reshape- (2005-2010) paketlerinin yerini almıştır.Tidyr, verilerinizi "düzenlemeyi" kolaylaştıran yani verilerimizi düzenli hale getirmemize yaran bir pakketir.Düzenli veriler, toplu evren boyunca mümkün olan her yerde kullanılan standart bir veri depolama yöntemini tanımlar. Düzenli verilerin en önemli iki özelliği şunlardır; Her sütun bir değişkendir, her satır bir gözlemdir,her hücre tek bir değerdir denebilir. Verilerinizi bu şekilde düzenlemek, değişkenlere (sütun adları olarak) ve gözlemlere (satır endeksleri olarak) atıfta bulunmak için tutarlı bir yolunuz olduğundan, Analiz yapmamız kolay bir hale gelir. 
+  
+  "tidyr", "tidyverse" R paketleri koleksiyonun Düzenleme sağlayan "tibble" kütüphanesi gibi bir alt kütüphanesi olarak düşünülebilir
+  
+  Kurucu-Geliştirici-Destekçi : Hadley Wickham (Kurucu/Geliştirici-Tidyverse–RStudio)
+  
+  R programının help menüsünden yararlanarak bu pakete baktığımızda ise; Her sütunun bir değişken, her satırın bir gözlem olduğu ve her hücrenin tek bir değer içerdiği düzenli veriler oluşturmaya yardımcı olacak araçlar. 'tidyr', bir veri kümesinin şeklini (pivoting) ve hiyerarşisini (yuvalama ve 'yuvadan çıkarma'), derinlemesine iç içe geçmiş listeleri dikdörtgen veri çerçevelerine ('dikdörtgenleme') dönüştürmek ve dize sütunlarından değerleri çıkarmak için araçlar içerir. Ayrıca eksik değerlerle (hem örtük hem de açık) çalışmak için araçlar içerir yorumunu görmekyteyiz.
+  
+## Kurulum:
+
+  Bir paketi R programında kullanmak için önce paketin yüklenmesi gerekir. Tidyr paketinin yüklemesi aşağıdaki  komut kullanılarak yapılabilir
+  
+ **install.packages("tidyr")**
+
+ Daha sonra yukarıda bahsettiğimiz gibi Dağınık verileri düzenlemek için önce veri kümenizdeki değişkenleri tanımlarsınız, ardından bunları sütunlara taşımak için tidyr tarafından sağlanan araçları kullanırsınız.
+ 
+## Tidyr işlevleri Beş Ana Kategoriye Ayrılır:
+ 
+-> Uzun ve geniş formlar arasında dönüşüm sağlar, bunu spread()ve gather() fonksiyonlarını  kullanarak yapar. detyalı bilgi vermek gerekirse;
+ 
+  **gather() fonksiyonu**: Birden çok sütun alır ve bunları değer çiftlerinde toplar aslında; Geniş verileri daha uzun hale getirir. Bu işlev birden çok sütunu  alır ve gerektiğinde diğer tüm sütunları çoğaltarak, anahtar-değer çiftleri içine atar.
+ 
+  **spread() fonksiyonu**: iki sütun (bir anahtar/değer çifti) alır ve bunları birden çok sütuna yayarak "uzun" verileri daha geniş hale getirir. Sütunlar yerine satırlar oluşturan değişkenleriniz olduğunda kullanılır.
+   
+   Ayrıca spread()ve gather() fonksiyonları pivot_longer()ve pivot_wider() fonksiyonlarının yerini almıştır.
+   
+-> İç içe geçmiş listeleri  düzenli tibble(data frame)'lara dönüştüren “Dikdörtgenleme”.    bu işlemleri yaparken unnest_longer(), unnest_wider(), hoist() fonksiyonlarını kullanır.cDetaylı bilgi vermek gerekirse;
+
+  **unnest_longer() fonksiyonu**: Bir liste sütununun her öğesini bir satıra dönüştürür.
+  
+  **unnest_wider() fonksiyonu**: Bir liste sütununun her öğesini bir sütuna dönüştürür.
+  
+  **hoist() fonksiyonu**: Liste sütununun bileşenlerini seçerek kendi üst düzey sütunlarına çekmenize olanak tanır.
+  
+-> İç içe yerleştirme, gruplanmış verileri, her grubun iç içe geçmiş bir veri çerçevesi içeren tek bir satır haline geldiği bir forma dönüştürür ve verileri ayırmamızı sağlar. Bu işlemi yaparken nest(), unnest() fonksiyonlarını kullanır. Detaylı bilgi vermek gerekirse
+  
+  **nest() fonksiyonu**: Tüm iç içe değişkenleri içeren Data farme veri türnün bir listesini oluşturur.  dolaylı olarak bir özetleme işlemidir. Bu, tüm veri kümeleriyle, özellikle de modellerle çalışan diğer özetlerle birlikte kullanışlıdır. Aslında nest() data frames şeklinden list-column'a dönüştürür.
+  
+  **unnest() fonksiyonu**: Temel olarak nest() işlemini tersine çevirir. Listenin her elemanını kendi satırı yapar. Atomik vektörler, listeler veya data fream içeren (ancak farklı türlerin bir karışımını içermeyen) liste sütunlarını işleyebilir.
+  
+-> Karakter sütunlarını bölme ve birleştirme,birden çok sütunu tek bir karakter sütununda birleştirmek için ve tek bir karakter sütununu birden çok sütuna çekmek için separate(),extract() ve unite() fonksiyonlarını kullanır. Detaylı bilgi vermek gerekirse;
+  
+  **separate() fonksiyonu**:  Daha uzun verileri daha geniş bir biçime dönüştürür yani; Bir normal ifade veya bir karakterin konumlarının vektörü verildiğinde, separate(); tek bir karakter sütununu birden çok sütuna dönüştürür.
+   
+  **extract() fonksiyonu**: Grupları yakalayan normal bir ifade verildiğinde, extract(), her grubu yeni bir sütuna dönüştürür. Gruplar eşleşmezse veya giriş NA ise, çıkış NA olur
+
+  **unite() fonksiyonu**: İki sütunu bir sütunda birleştirir. Birden fazla değişken değerlerini yapıştırmak için bir kolaylık sağlayan bir fonksiyonudur. Kısaca tek bir gözlemin iki değişkenini tek bir değişkende birleştirir
+  
+-> Örtük eksik değerleri  açık hale getirir,  örtük açık eksik değerler yapar ; eksik değerleri sonraki/önceki değerle veya bilinen bir değeri ile değiştirir. Bunlar için complete(), drop_na(), fill() ve  replace_na() fonkiyonlarını kullanır. Detaylı bilgi vermek gerekirse;
+
+  **complete() fonksiyonu**: Örtülü eksik değerleri açık eksik değerlere dönüştürür.
+  
+  **drop_na() fonksiyonu**: Eksik değerleri içeren satırları veriden çıkartır.
+
+  **fill() fonksiyonu**: seçili sütunlardaki eksik değerleri doldurur. Bu, değerlerin tekrarlanmadığı ve yalnızca değiştiklerindekaydedilir.kaydedilen çıktı ise ortak çıktı biçiminde kullanışlı olur
+ 
+  **replace_na() fonksiyonu**: Eksik değerlerin içine atama yapmak için kullanılır
+ 
+ 
+ tidyr, dağınık verilerinizi düzenlemek için üç ana işlev sunar: gather(), separate()ve spread(). Bu fonksiyonlar ve yukarıda bahsedilen fonksiyonlar haricinde diğer fonksiyonlar ağağıda açıklanmıştır.
+ 
+ **pivot_longer() fonskiyonu**: pivot_longer(), satır sayısını artırarak ve sütun sayısını azaltarak verileri uzatır.
+ 
+ **pivot_wider() fonksiyonu**: pivot_wider(), satır sayısını azaltarak ve sütun sayısını artırarak verileri kısaltır
+ 
+ **starts_with()fonksiyonu**: "Bu seçimin yardımcıları, değişkenleri belirli bir desene göre eşleştirir. 
+Bu yardımcılar ise adlarındaki kalıpları eşleştirerek değişkenleri seçer:
+
+  1-starts_with(): Baş kısmına eklerin .
+  
+  2-ends_with(): Sonuna ekler.
+  
+  3-contains(): Gerçek bir dize içerir.
+  
+  4-matches(): Normal bir ifadeyle eşleşir.
+  
+  5-num_range(): x01, x02, x03 gibi sayısal bir aralıkla eşleşir.
+
+ **crossing()fonksiyonu**: Girdilerini tekilleştiren ve sıralayan expand_grid() çevresinde bir sarmalayıcıdır.
+
+ **all_of()fonksiyonu**: Bir karakter vektöründeki değişken adlarını eşleştirir. Tüm adlar mevcut olmalıdır, aksi takdirde bir sınır dışı hatası verilir.
+ 
+ **any_of()fonksiyonu**:  all_of() İle aynı, ancak var olmayan adlar için hiçbir hata atılmaz.
+ 
+ **full_seq() fonksiyonu**: Temel olarak bir vektörde gözlemlenmesi gereken ancak gözlemlenmeyen eksik değerleri doldurur. Önemli bir nokta Vektör sayısal olmalıdı
+
+## Ek olarak tidyr'de düzenli değerlendirmenin iki temel biçimi kullanılır:
+
+### Tıdy Selection
+
+ Düzenli seçimi kullanan tüm işlevlerin altında tidyselect paketi bulunur. bu işlevi; fill(), drop_na(), pivot_longer(), pivot_wider(), nest(), separate(), extract(), starts_with() fon
+
+### Data Masking 
+
+ Veri değişkenlerini ortamdaki değişkenlermiş gibi kullanmamıza izin verir. Bu işlevi; as_tibble(), nesting(), crossing(), expand() fonksiyonlarını kullanarak gerçekleştirir.
+ 
+  Yukarıda verdiğimiz bilgileri kısaca özetlemek gerekirse, tidyr verileri düzenlemeye, temizlememizi ve manipüle etmemizi kolaylaştıran ve buna olanak sağlayan bir kütüphanedir.
+  
+  
+### Yukarıda da bahsettiğmiz gibi tidyr, dağınık verilerinizi düzenlemek için üç ana işlev sunar: gather(), separate()ve spread() bu fonksiyonları verilerimizle örneklemek gerekirse;
+
+#### gather() fonsiyonu örneği:
+
+```{r echo=TRUE}
+library(tidyr)
+library(readr)
+corona <- read_csv("C:/Users/ilkay/Documents/Github/R-Final/coronavirus.csv")
+head(corona, 3) #kitlemiz
+set.seed(10) #kodu her çalıştırdığımızda örneklemimizin değişmemesi için kullandığımız bir fonksiyon
+data_sample <- corona[sample(nrow(corona),10),replace=F]
+class(data_sample)
+sutun <- c("x", "y")
+new<-data.frame(sutun,data_sample$new_deaths,data_sample$total_cases_per_million,data_sample$total_cases)
+new_new<- gather(new, referans, yeni_deger, -sutun)
+print(new_new)
+```
+
+  Bu kod bloğunda görüldüğü gibi kümme verilerimiz çok büyük olduğu için **set.sedd** foknsiyonu ile her sütün için 10 gözleme indirerek devam ettik, verimizi data fream formatına dönüştürdük ve gather() fonksiyonu ile 3 sütunu birleştirerek tek bir sütun haline getirdik.
+ 
+#### spread() fonksiyonu örneği:
+
+```{r echo=TRUE}
+library(tidyr)
+library(readr)
+library(dplyr)
+new_new <-  new_new%>% 
+  group_by(referans) %>% 
+  mutate(sutun = row_number())
+new_new %>% 
+  spread(referans, yeni_deger) %>% 
+  select(-sutun)
+```
+
+  Bu kod bloğunda görüldüğü gibi spread() fonksiyonunu  tek başına çalıştırmayı denediğimizde Error: Each row of output must be identified by a unique combination of keys ( Her çıktı satırı benzersiz bir tuş kombinasyonu ile tanımlanmalıdır) hatasını alıyoruz bunun için mutate() fonksiyonu ile bir düzenleme yaparak sutun degerlerini sildik ve tek kod satırını liste haline getirdik.
+
+#### separate() fonksiyonu örneği:
+  
+```{r echo=TRUE}
+library(tidyr)
+library(readr)
+corona <- read_csv("C:/Users/ilkay/Documents/Github/R-Final/coronavirus.csv")
+head(corona, 3) #kitlemiz
+set.seed(10) #kodu her çalıştırdığımızda örneklemimizin değişmemesi için kullandığımız bir fonksiyon
+data_sample <- corona[sample(nrow(corona),10),replace=F]
+class(data_sample)
+sutun <- c("x", "y")
+yeni<-data.frame(sutun,data_sample$location,data_sample$total_cases_per_million,data_sample$date)
+yeni_yeni <- separate(yeni, data_sample.date, c("yil", "ay","gün"))
+print(yeni_yeni)
+```
+
+   Bu kod bloğunda görüldüğü gibi tekrar "yeni" adında bir veri seti oluşturduk çünkü diğer örneklerde oluşturduğumuz veri setleri bu örnek için kullanılamaz. Bu örnekte separate() fonksiyonunu kullanarak yeni adlı veri setimizdeki date sütununu yıl, ay ve gün sütunu şeklinde 3 sütuna ayırdık.
+   
+# Verimizi Manipüle Etme ve Düzenleme Aşaması:
+
+```{r echo=TRUE}
+library(readr)
+library(dplyr)
+library(tidyr)
+corona <- coronavirus <- read_csv("C:/Users/ilkay/Documents/Github/R-Final/coronavirus.csv")  
+View(corona)
+```
+
+ *Buradaki kod satırında;; "corona" adlı veri setimizi R'a aktarma işlemini yaptık, kullnacağımız kütüphanelerin girişlerini yaptık.*
+
+```{r echo=TRUE}
+library(readr)
+library(dplyr)
+library(tidyr)
+a <-corona %>% 
+  filter(continent %in% c("Africa","Asia","Europe","North America","South America")) %>%   
+  summarize(date=date,continent=continent, location=location, new_cases=new_cases, total_cases=total_cases, new_cases_per_million=new_cases_per_million,
+            new_deaths=new_deaths, total_deaths=total_deaths, new_deaths_per_million=new_deaths_per_million, population=population,cases_density_population=total_cases/population)
+```
+
+  *Buradaki kod satırında;; Corona verisinin içine girmemize yardımcı olan fonksiyon (%>%) ile yeni bir data seti oluşturmak üzere Corona verisinde yapılacak işlemleri a data setinin içine aktardık. "filter" fonksiyonunu kullanarak Corona verisinin içindeki Africa, Asia, Europe, North America ve South America kıtalarını a datasına atanmasını sağladık daha sonra, Verimizde kullanmak istediğimiz sütunlaru summarize() fonksiyonunu kullanarak çektik.*
+  
+```{r echo=TRUE}
+a <- a%>%
+  filter(date > "2020-06-01" & date <"2020-06-30") %>%  
+  drop_na() 
+```
+
+  *Buradaki kod satırında;; Veri setimizdeki tarih verilerini filter() fonksiyonunu kullanarak  "2020-06-01" ile "2020-06-30" tarihi arasındaki veriler olarak filtreledik ve drop_na() fonksiyonun kullanarak eksik ve na değerlerini içeren kod satırlarını verimizden çıkardık.*
+
+```{r echo=TRUE}
+  
+africa <- a %>%
+  filter(continent == "Africa")
+Asia <- a %>%
+  filter(continent == "Asia")
+Europe <- a %>%
+  filter(continent == "Europe")
+North_America <- a %>%
+  filter(continent == "North America")
+South_America <- a %>%
+  filter(continent == "South America")
+
+```
+
+*Buradaki kod satırında; "a" veri setine atadığımız kıtaları filter() fonksiyonunu kullanarak her kıta için ayrı olarak oluşturduğumuz veri setinin içine atayarak filtreleme yaptık.*
+
+```{r echo=TRUE}
+x_asia <- Asia[sample(nrow(Asia),20),]
+x_africa <- africa[sample(nrow(africa),20),]
+x_europe <- Europe[sample(nrow(Europe),20),]
+x_sth_america <- South_America[sample(nrow(South_America),20),]
+x_nrth_america <- North_America[sample(nrow(North_America),20),]
+```
+
+  *Buradaki kod satırında; Kıtalara ait veri setlerimizi oluşturduktan sonra anlaşılabilir hale getirmek için bu veri setlerinin satırlarını 20 satıra indirgeyerek veri düzenlemesi işlemine devam ettik.*
+  
+```{r echo=TRUE}
+x_corona <- rbind(x_asia,x_africa,x_europe,x_sth_america,x_nrth_america)
+```
+
+  *Buradaki kod satırında;Veri setlerini 20 satıra indirdikten sonra hepsini tek bir veri setinde toplamak için rbind() fonksiyonunu kullanarak "x_corona" data sına atama işlemini gerçekleştirdik.*
+
+```{r}
+x_corona <- x_corona[,-1]  
+```
+
+ *Buradaki kod satırında; 1. sütünda bulunana tarih verilini veri setimizden çıkardık.*
+
+**Bu işlemler sonucunda, Gozlemi yapilacak veri X_CORONA verisi olarak elde edilmiştir.**
+
+
+# KAYNAKÇA
+
+->https://stackoverflow.com/questions/60083062/tidyrspread-error-each-row-of-output-must-be-identified-by-a-unique-combina
+
+->https://www.rstudio.com/blog/
+
+->https://bookdown.org/content/2096/
+
+->https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html
+
+->https://www.geeksforgeeks.org
+
+->https://www.tidyverse.org/
+
+
